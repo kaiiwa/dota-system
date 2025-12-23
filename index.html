@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>DOTA 2 // SYSTEM</title>
+    <!-- ICON: Closed Eye (System Style) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c2c2b0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24'%3E%3C/path%3E%3Cline x1='1' y1='1' x2='23' y2='23'%3E%3C/line%3E%3C/svg%3E">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Tenor+Sans&display=swap');
 
@@ -97,7 +99,6 @@
         .label { 
             font-family: 'Space Mono', monospace; font-size: 12px; 
             color: var(--accent); width: 85%; 
-            /* pointer-events: none; REMOVED THIS so hover works */
         }
         .row:hover .label { color: var(--highlight); }
 
@@ -290,7 +291,6 @@
         threads: { ru: "ЯДРА CPU", en: "CPU THREADS" }
     };
 
-    // REORDERED CATEGORIES: System is now 3rd, Shadows is last
     const categories = {
         launch: {
             title: {ru: "Параметры запуска", en: "Launch Options"},
@@ -434,6 +434,7 @@
         document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
         document.getElementById(`l-${l}`).classList.add('active');
 
+        // Animate UI elements
         document.querySelectorAll('.translatable').forEach(el => {
             const key = el.dataset.key;
             if (uiText[key]) {
@@ -446,11 +447,13 @@
             }
         });
 
+        // Animate Section Headers
         document.querySelectorAll('.section h2').forEach(h2 => {
             const catKey = h2.dataset.cat;
             if (categories[catKey]) animateText(h2, categories[catKey].title[l]);
         });
 
+        // Animate Grid Items (Labels) without re-rendering
         document.querySelectorAll('.grid .label').forEach(lbl => {
             const cmd = lbl.dataset.rawCmd; 
             for (const cat in categories) {
@@ -461,9 +464,6 @@
                 }
             }
         });
-        
-        // Re-render grid to update language inside grid items
-        render();
     }
 
     function toggleRow(row) {
@@ -471,10 +471,9 @@
         checkbox.checked = !checkbox.checked;
     }
 
+    // Initial Render (Only called once)
     function render() {
         const grid = document.getElementById('main-grid');
-        // We only clear if we are rebuilding structure, but here we just want to update text mostly.
-        // However, for simplicity, we rebuild.
         grid.innerHTML = '';
 
         Object.keys(categories).forEach(key => {
@@ -615,8 +614,9 @@
         }, 800);
     }
 
-    // Force initialization of language to match state.lang ('ru')
-    // This ensures static HTML text matches the logic immediately
+    // 1. Render the grid once
+    render();
+    // 2. Force language text update (to ensure everything is in RU and animated initially)
     setLang('ru');
 </script>
 </body>
